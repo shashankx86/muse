@@ -1,0 +1,59 @@
+import { Button, VerticalBox } from "std-widgets.slint";
+
+export component SplashScreen {
+    animate opacity { duration: 400ms; }
+    
+    Rectangle {
+        background: #1a1f35;
+        Text {
+            text: "Muse";
+            font-size: 48px;
+            color: white;
+            font-family: "Arial";
+            anchors.center-x: parent.center-x;
+            anchors.center-y: parent.center-y;
+        }
+    }
+}
+
+export component MainWindow {
+    in-out property<bool> show;
+
+    Rectangle {
+        background: #1a1f35;
+        VerticalBox {
+            alignment: center;
+            Text {
+                text: "Hello World";
+                color: white;
+                font-size: 24px;
+                horizontal-alignment: center;
+            }
+        }
+    }
+}
+
+export component AppWindow inherits Window {
+    private property<bool> show-splash: true;
+    
+    preferred-width: 400px;
+    preferred-height: 300px;
+    
+    callback init();
+    init => {
+        show-splash = true;
+        invoke-after(2000ms, {
+            show-splash = false;
+        });
+    }
+
+    SplashScreen {
+        opacity: root.show-splash ? 1 : 0;
+        visible: opacity > 0;
+    }
+
+    MainWindow {
+        show: !root.show-splash;
+        opacity: root.show-splash ? 0 : 1;
+    }
+}
